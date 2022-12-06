@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<!-- Import chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+{% block content %}
+
+<div class="container" style="width: 100vw; min-height: 100vh;">
+    <h1 class="text-center p-2">Dashboard</h1>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <canvas id="myChart"></canvas>
+                <div class="card-body">
+                  <h5 class="card-title">Grafico 1</h5>
+                  <p class="card-text">Questo grafico è veramente figo porco Zio</p>
+                  <a href="{{ url_for('index') }}" class="btn btn-primary">Vai a fagioli</a>
+                </div>
+              </div>
+        
+        </div>
+        <!-- AGGIUNGI QUI ALTRI GRAFICI -->
+    </div>
+</div>
+
+
+<script>
+    const ctx = document.getElementById('myChart');
+
+    const generateGraph = (ctx, context) => {
+        let graph_data = JSON.parse(context)
+        console.log(graph_data)
+        new Chart(ctx, {
+            type: graph_data['graph_type'] || 'bar',
+            data: {
+                labels: graph_data.labels,
+                datasets: [{
+                    label: graph_data.graph_title,
+                    data: graph_data.data,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    generateGraph(ctx, '{{ data|tojson }}');
+</script>
+{% endblock %}
