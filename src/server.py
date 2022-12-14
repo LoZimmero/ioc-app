@@ -5,6 +5,30 @@ from utils.utils import get_graph_data
 app = Flask(__name__)
 
 df = pd.read_csv('data/result.csv', sep=',')
+resultwithmatches_df = pd.read_csv('data/resultwithmatches.csv', sep=',')
+users_df = pd.read_csv('data/users.csv', sep=',')
+
+TABLES = [
+    {
+        'name': 'Users table',
+        'description': 'Table representing users\'data',
+        'id': 0
+    },
+    {
+        'name': 'Results table',
+        'description': 'Table representing results',
+        'id': 1
+    }
+]
+
+TABLE_DATA = {
+    0: users_df,
+    1: resultwithmatches_df
+}
+
+def get_table_data(id: int):
+    return TABLE_DATA.get(id)
+    
 
 @app.route('/', methods=['GET'])
 def index():
@@ -12,8 +36,15 @@ def index():
 
 @app.route('/tables', methods=['GET'])
 def tables():
+    return render_template('tables.html', data= {'tables': TABLES})
 
+@app.route('/tables/<int:table_id>', methods=['GET'])
+def table(table_id):
+    
+    df = TABLE_DATA.get(table_id)
     table_data = []
+
+    print(table_id, table_data)
 
     for index, data in df.iterrows():
         obj = {}
@@ -29,7 +60,7 @@ def tables():
     # NB: 'table_data' is a list of lists because JS doesen't want a list
     # too long.
 
-    return render_template('tables.html', data= {'data':table_data})
+    return render_template('table.html', data= {'data':table_data})
 
 @app.route('/dashboard', methods=['GET'])
 def dashboard():

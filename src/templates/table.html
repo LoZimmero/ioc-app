@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<!-- Import tables -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.6.0/dt-1.13.1/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.6.0/dt-1.13.1/datatables.min.js"></script>
+{% endblock %}
+{% block content %}
+
+<div class="container" style="max-width: 100vw; max-height: 100vh;">
+    <table id="example" class="display p-5">
+</div>
+
+
+</table>
+
+
+<script>
+    //let data = JSON.parse('{{ data.data|tojson}}')
+
+    let dataArrays = {{data.data|tojson}}
+    let data = [];
+    for (list of dataArrays) {
+        for (element of list) {
+            data.push(element);
+        }
+    }
+    console.log(data)
+    let headers = Object.keys(data[0])
+    let parsedHeaders = []
+    for (h of headers) {
+        parsedHeaders.push({title: h, data: h})
+    }
+    console.log(parsedHeaders)
+    //console.log(data)
+    $(document).ready(function () {
+        $('#example').DataTable({
+            data: data,
+            columns: parsedHeaders
+        });
+    });
+
+
+
+</script>
+{% endblock %}
