@@ -1,6 +1,6 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, make_response
 import pandas as pd
-from utils.utils import get_graph_data
+from utils.utils import get_graph_data, get_all_graphs_reducted
 
 app = Flask(__name__)
 
@@ -43,9 +43,6 @@ def table(table_id):
     
     df = TABLE_DATA.get(table_id)
     table_data = []
-
-    print(table_id, table_data)
-
     for index, data in df.iterrows():
         obj = {}
         temp_res = []
@@ -59,42 +56,39 @@ def table(table_id):
 
     # NB: 'table_data' is a list of lists because JS doesen't want a list
     # too long.
-
     return render_template('table.html', data= {'data':table_data})
 
-@app.route('/dashboard', methods=['GET'])
-def dashboard():
+@app.route('/dashboards', methods=['GET'])
+def dashboards():
 
-    df2 = df.groupby(['indicator_type'])['indicator'].count()
-
-    print(df2)
+    graphs = get_all_graphs_reducted()
+    graphs = [e.to_json() for e in graphs]
+    print(graphs,'\n')
 
     # Return bar graph showing how many data grouped by categories
-    return render_template('dashboard.html', data= {
-        'graph_title': 'Numero di IoC raggruppati per indicator_type',
-        'graph_type': 'bar',
-        'labels': list(df2.index),
-        'data': list(df2)
-    })
+    return render_template('dashboards.html', graphs=graphs)
 
-@app.route('/dashboard/<name>', methods=['GET'])
-def dashboard_list(name):
+@app.route('/dashboards/<int:id>', methods=['GET'])
+def dashboard(id):
 
-    graph_id = 0
+    graph_id = None
     try:
-        graph_id = int(name)
+        graph_id = int(id)
     except:
-        return Response(status=404)
+        # Throw 404
+        response = make_response(render_template('404.html', reason='Invalid graph_id passed'))
+        response.status_code = 404
+        return response
 
-    df2 = get_graph_data(df, graph_id)
+    graph_data = get_graph_data(df, graph_id)
+    if not graph_data:
+        # Throw 404
+        response = make_response(render_template('404.html', reason='Graph not found'))
+        response.status_code = 404
+        return response
 
     # Return bar graph showing how many data grouped by categories
-    return render_template('dashboard_list.html', data= {
-        'graph_title': 'Numero di IoC raggruppati per indicator_type',
-        'graph_type': 'bar',
-        'labels': list(df2.index),
-        'data': list(df2)
-    })
+    return render_template('dashboard.html', data=graph_data.to_json())
 
 if __name__=='__main__':
     app.run(

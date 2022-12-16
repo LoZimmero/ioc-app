@@ -2,26 +2,25 @@
 
 
 {% block head %}
-
+<!-- Import chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
 {% block content %}
-
 <div class="container">
-    <h1 class="text-center">Tabelle</h1>
+    <h1 class="text-center">Graphs</h1>
     <div class="row">
-        {% for table in data.tables %}
+        {% for g in graphs %}
         <div class="col-3">
             <div class="card">
                 <img class="card-img-top" src="{{url_for('static', filename='cat.jpg')}}">
                 <div class="card-body">
-                  <h5 class="card-title">{{table.name}}</h5>
-                  <p class="card-text">{{table.description}}</p>
-                  <a href="{{ url_for('tables')+'/'+table.id|string }}" class="btn btn-primary">Open</a>
+                  <h5 class="card-title">{{g.title}}</h5>
+                  <p class="card-text">{{g.description}}</p>
+                  <a href="{{ url_for('dashboards')+'/'+g.id|string }}" class="btn btn-primary">Open</a>
                 </div>
               </div>
         </div>
         {% endfor %}
     </div>
 </div>
-
 {% endblock %}
