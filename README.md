@@ -26,3 +26,15 @@ Then execute
 # Resources
 https://sparkbyexamples.com/pandas/pandas-groupby-count-examples/
 https://datatables.net/examples/basic_init/data_rendering.html
+
+# Docker
+
+Build docker image:
+```bash
+docker build -t iocapp/iocapp .
+```
+
+Run
+```bash
+docker run -p 80:80 iocapp/iocapp
+```
