@@ -8,6 +8,13 @@ df = pd.read_csv('data/result.csv', sep=',')
 resultwithmatches_df = pd.read_csv('data/resultwithmatches.csv', sep=',')
 users_df = pd.read_csv('data/users.csv', sep=',')
 
+# Convert date columns of df into dates
+dates_columns = [d for d in df.columns if '_date' in d]
+for d in dates_columns:
+    # replace "None" string with None
+    col = df[d].replace('None', '')
+    df[d] = pd.to_datetime(col)
+
 TABLES = [
     {
         'name': 'Users table',
