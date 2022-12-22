@@ -14,6 +14,13 @@ ALL_GRAPHS: Dict[int, GraphData] = {
         title='IoC by user',
         type='bar',
         description='This graph shows how many IoC where found by users'
+    ),
+    2: GraphData(
+        id = 2,
+        title='IoC by label',
+        type='bar',
+        description='This graph shows how many IoC where collected grouped by indicator_type'
+
     )
 }
 
@@ -32,10 +39,17 @@ def ioc_by_user_data(full_df: pd.DataFrame) -> GraphData:
     return graph_data
 
 #TODO: Add other functions for other graphs here!
+def ioc_by_label(full_df: pd.DataFrame) -> GraphData:
+    df = full_df.groupby(['label'])['indicator'].count()    
+    graph_data = ALL_GRAPHS.get(2)
+    graph_data.labels = list(df.index)
+    graph_data.data = list(df)
+    return graph_data   
 
 GRAPH_DICT: Dict[int, Callable[[pd.DataFrame], GraphData]] = {
     0: ioc_by_indicatortype_data,
-    1: ioc_by_user_data
+    1: ioc_by_user_data,
+    2: ioc_by_label
 }
 
 def get_graph_data(full_df: pd.DataFrame, graph_id: int) -> GraphData:
