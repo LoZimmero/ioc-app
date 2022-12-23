@@ -27,6 +27,12 @@ ALL_GRAPHS: Dict[int, GraphData] = {
         title='IoC discovered first by twitter',
         type='bar',
         description='This graph shows how many IoC where discovered first by twitter'
+    ),
+    4: GraphData(
+        id = 4,
+        title='Percentages of IoC\'s categories',
+        type='bar',
+        description='This graph shows the percentages of IoC\'s categories'
     )
 }
 
@@ -82,13 +88,24 @@ def ioc_got_first_by_twitter_data(full_df: pd.DataFrame) -> GraphData:
     graph_data.labels = labels
     graph_data.data = data
     return graph_data
+
+def ioc_categories_percentages(full_df: pd.DataFrame) -> GraphData:
+    num_rows = full_df.shape[0]
+    series = full_df.groupby(['indicator_type'])['indicator'].count()
+    series = series.map(lambda elem : round(elem/num_rows*100, 2))
+    graph_data = ALL_GRAPHS.get(4)
+    graph_data.labels = list(series.index)
+    graph_data.data = list(series)
+    return graph_data
+
 #TODO: Add other functions for other graphs here!
 
 GRAPH_DICT: Dict[int, Callable[[pd.DataFrame], GraphData]] = {
     0: ioc_by_indicatortype_data,
     1: ioc_by_user_data,
     2: ioc_by_label,
-    3: ioc_got_first_by_twitter_data
+    3: ioc_got_first_by_twitter_data,
+    4: ioc_categories_percentages
 }
 
 def get_graph_data(full_df: pd.DataFrame, graph_id: int) -> GraphData:
