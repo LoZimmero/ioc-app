@@ -33,7 +33,14 @@ ALL_GRAPHS: Dict[int, GraphData] = {
         title='Percentages of IoC\'s categories',
         type='bar',
         description='This graph shows the percentages of IoC\'s categories'
+    ),
+    5: GraphData(
+        id = 5,
+        title='Twitter after AlienVoult',
+        type='bar',
+        description='This graph shows the number of times Twitter comes after AlienVault'
     )
+
 }
 
 def ioc_by_indicatortype_data(full_df: pd.DataFrame) -> GraphData:
@@ -42,6 +49,7 @@ def ioc_by_indicatortype_data(full_df: pd.DataFrame) -> GraphData:
     graph_data.labels = list(df.index)
     graph_data.data = list(df)
     return graph_data
+
 
 def ioc_by_user_data(full_df: pd.DataFrame) -> GraphData:
     df = full_df.groupby(['user'])['indicator'].count()
@@ -89,6 +97,8 @@ def ioc_got_first_by_twitter_data(full_df: pd.DataFrame) -> GraphData:
     graph_data.data = data
     return graph_data
 
+
+
 def ioc_categories_percentages(full_df: pd.DataFrame) -> GraphData:
     num_rows = full_df.shape[0]
     series = full_df.groupby(['indicator_type'])['indicator'].count()
@@ -98,6 +108,23 @@ def ioc_categories_percentages(full_df: pd.DataFrame) -> GraphData:
     graph_data.data = list(series)
     return graph_data
 
+def twitter_after_alienvault(full_df: pd.DataFrame) -> GraphData:
+    
+    df= full_df
+    df['tw_to_av'] = df['tw_to_av'].replace('None','0')
+    df['tw_to_av'] = df['tw_to_av'].astype('float')
+    df2= df[df["tw_to_av"] > 0]
+    
+    df = df2.groupby(['indicator_type'])['tw_to_av'].count()  
+    
+    print(df)
+    graph_data = ALL_GRAPHS.get(5)
+    graph_data.labels = list(df.index)
+    graph_data.data = list(df)
+    return graph_data
+
+
+
 #TODO: Add other functions for other graphs here!
 
 GRAPH_DICT: Dict[int, Callable[[pd.DataFrame], GraphData]] = {
@@ -105,7 +132,8 @@ GRAPH_DICT: Dict[int, Callable[[pd.DataFrame], GraphData]] = {
     1: ioc_by_user_data,
     2: ioc_by_label,
     3: ioc_got_first_by_twitter_data,
-    4: ioc_categories_percentages
+    4: ioc_categories_percentages,
+    5: twitter_after_alienvault
 }
 
 def get_graph_data(full_df: pd.DataFrame, graph_id: int) -> GraphData:
