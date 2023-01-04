@@ -36,7 +36,7 @@ ALL_GRAPHS: Dict[int, GraphData] = {
     ),
     5: GraphData(
         id = 5,
-        title='Twitter after AlienVoult',
+        title='Twitter after AlienVault',
         type='bar',
         description='This graph shows the number of times Twitter comes after AlienVault'
     ),
@@ -45,6 +45,18 @@ ALL_GRAPHS: Dict[int, GraphData] = {
         title='Twitter after Kaspersky',
         type='bar',
         description='This graph shows the number of times Twitter comes after Kaspersky'
+    ),
+    7: GraphData(
+        id = 7,
+        title='Twitter after Misp',
+        type='bar',
+        description='This graph shows the number of times Twitter comes after Misp'
+    ),
+    8: GraphData(
+        id = 8,
+        title='Twitter after VirusTotal',
+        type='bar',
+        description='This graph shows the number of times Twitter comes after VirusTotal'
     )
 
 }
@@ -144,7 +156,35 @@ def twitter_after_kaspersky(full_df: pd.DataFrame) -> GraphData:
     graph_data.data = list(df)
     return graph_data
 
+def twitter_after_misp(full_df: pd.DataFrame) -> GraphData:
+    
+    df= full_df
+    df['tw_to_misp'] = df['tw_to_misp'].replace('None','0')
+    df['tw_to_misp'] = df['tw_to_misp'].astype('float')
+    df2= df[df["tw_to_misp"] > 0]
+    
+    df = df2.groupby(['indicator_type'])['tw_to_misp'].count()  
+    
+    print(df)
+    graph_data = ALL_GRAPHS.get(7)
+    graph_data.labels = list(df.index)
+    graph_data.data = list(df)
+    return graph_data
 
+def twitter_after_virustotal(full_df: pd.DataFrame) -> GraphData:
+    
+    df= full_df
+    df['tw_to_vt'] = df['tw_to_vt'].replace('None','0')
+    df['tw_to_vt'] = df['tw_to_vt'].astype('float')
+    df2= df[df["tw_to_vt"] > 0]
+    
+    df = df2.groupby(['indicator_type'])['tw_to_vt'].count()  
+    
+    print(df)
+    graph_data = ALL_GRAPHS.get(8)
+    graph_data.labels = list(df.index)
+    graph_data.data = list(df)
+    return graph_data
 #TODO: Add other functions for other graphs here!
 
 GRAPH_DICT: Dict[int, Callable[[pd.DataFrame], GraphData]] = {
@@ -154,7 +194,9 @@ GRAPH_DICT: Dict[int, Callable[[pd.DataFrame], GraphData]] = {
     3: ioc_got_first_by_twitter_data,
     4: ioc_categories_percentages,
     5: twitter_after_alienvault,
-    6: twitter_after_kaspersky
+    6: twitter_after_kaspersky,
+    7: twitter_after_misp,
+    8: twitter_after_virustotal
 }
 
 def get_graph_data(full_df: pd.DataFrame, graph_id: int) -> GraphData:
