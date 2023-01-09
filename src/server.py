@@ -70,7 +70,7 @@ def dashboards():
 
     graphs = get_all_graphs_reducted()
     graphs = [e.to_json() for e in graphs]
-    print(graphs,'\n')
+    #print(graphs,'\n')
 
     # Return bar graph showing how many data grouped by categories
     return render_template('dashboards.html', graphs=graphs)
