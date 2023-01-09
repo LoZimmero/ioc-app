@@ -38,25 +38,25 @@ ALL_GRAPHS: Dict[int, GraphData] = {
         id = 5,
         title='Twitter after AlienVault',
         type='bar',
-        description='This graph shows the number of times Twitter comes after AlienVault'
+        description='This graph shows the percentage of times Twitter comes after AlienVault'
     ),
     6: GraphData(
         id = 6,
         title='Twitter after Kaspersky',
         type='bar',
-        description='This graph shows the number of times Twitter comes after Kaspersky'
+        description='This graph shows the percentage of times Twitter comes after Kaspersky'
     ),
     7: GraphData(
         id = 7,
         title='Twitter after Misp',
         type='bar',
-        description='This graph shows the number of times Twitter comes after Misp'
+        description='This graph shows the percentage of times Twitter comes after Misp'
     ),
     8: GraphData(
         id = 8,
         title='Twitter after VirusTotal',
         type='bar',
-        description='This graph shows the number of times Twitter comes after VirusTotal'
+        description='This graph shows the percentage of times Twitter comes after VirusTotal'
     )
 
 }
@@ -127,13 +127,15 @@ def ioc_categories_percentages(full_df: pd.DataFrame) -> GraphData:
     return graph_data
 
 def twitter_after_alienvault(full_df: pd.DataFrame) -> GraphData:
+    num_rows = full_df.shape[0]
     
     df= full_df
     df['tw_to_av'] = df['tw_to_av'].replace('None','0')
     df['tw_to_av'] = df['tw_to_av'].astype('float')
     df2= df[df["tw_to_av"] > 0]
     
-    df = df2.groupby(['indicator_type'])['tw_to_av'].count()  
+    df = df2.groupby(['indicator_type'])['tw_to_av'].count()
+    df= df.map(lambda elem : round(elem/num_rows*100, 2))  
     
     print(df)
     graph_data = ALL_GRAPHS.get(5)
@@ -142,13 +144,15 @@ def twitter_after_alienvault(full_df: pd.DataFrame) -> GraphData:
     return graph_data
 
 def twitter_after_kaspersky(full_df: pd.DataFrame) -> GraphData:
-    
+    num_rows = full_df.shape[0]
+
     df= full_df
     df['tw_to_k'] = df['tw_to_k'].replace('None','0')
     df['tw_to_k'] = df['tw_to_k'].astype('float')
     df2= df[df["tw_to_k"] > 0]
     
     df = df2.groupby(['indicator_type'])['tw_to_k'].count()  
+    df= df.map(lambda elem : round(elem/num_rows*100, 2))
     
     print(df)
     graph_data = ALL_GRAPHS.get(6)
@@ -157,13 +161,15 @@ def twitter_after_kaspersky(full_df: pd.DataFrame) -> GraphData:
     return graph_data
 
 def twitter_after_misp(full_df: pd.DataFrame) -> GraphData:
-    
+    num_rows = full_df.shape[0]
+
     df= full_df
     df['tw_to_misp'] = df['tw_to_misp'].replace('None','0')
     df['tw_to_misp'] = df['tw_to_misp'].astype('float')
     df2= df[df["tw_to_misp"] > 0]
     
     df = df2.groupby(['indicator_type'])['tw_to_misp'].count()  
+    df= df.map(lambda elem : round(elem/num_rows*100, 2))
     
     print(df)
     graph_data = ALL_GRAPHS.get(7)
@@ -172,14 +178,16 @@ def twitter_after_misp(full_df: pd.DataFrame) -> GraphData:
     return graph_data
 
 def twitter_after_virustotal(full_df: pd.DataFrame) -> GraphData:
-    
+    num_rows = full_df.shape[0]
+
     df= full_df
     df['tw_to_vt'] = df['tw_to_vt'].replace('None','0')
     df['tw_to_vt'] = df['tw_to_vt'].astype('float')
     df2= df[df["tw_to_vt"] > 0]
     
     df = df2.groupby(['indicator_type'])['tw_to_vt'].count()  
-    
+    df= df.map(lambda elem : round(elem/num_rows*100, 2))
+
     print(df)
     graph_data = ALL_GRAPHS.get(8)
     graph_data.labels = list(df.index)
