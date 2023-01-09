@@ -56,7 +56,13 @@ ALL_GRAPHS: Dict[int, GraphData] = {
         id = 8,
         title='Twitter after VirusTotal',
         type='bar',
-        description='This graph shows the percentage of times Twitter comes after VirusTotal'
+        description='This graph shows the number of times Twitter comes after VirusTotal'
+    ),
+    9: GraphData(
+        id=9,
+        title='VirusTotal Trend over time',
+        type='bar',
+        description='This graph shows VirusTotal trend over time.'
     )
 
 }
@@ -128,15 +134,15 @@ def ioc_categories_percentages(full_df: pd.DataFrame) -> GraphData:
 
 def twitter_after_alienvault(full_df: pd.DataFrame) -> GraphData:
     num_rows = full_df.shape[0]
-    
+
     df= full_df
     df['tw_to_av'] = df['tw_to_av'].replace('None','0')
     df['tw_to_av'] = df['tw_to_av'].astype('float')
     df2= df[df["tw_to_av"] > 0]
     
     df = df2.groupby(['indicator_type'])['tw_to_av'].count()
-    df= df.map(lambda elem : round(elem/num_rows*100, 2))  
-    
+    df= df.map(lambda elem : round(elem/num_rows*100, 2))
+
     #print(df)
     graph_data = ALL_GRAPHS.get(5)
     graph_data.labels = list(df.index)
@@ -153,7 +159,7 @@ def twitter_after_kaspersky(full_df: pd.DataFrame) -> GraphData:
     
     df = df2.groupby(['indicator_type'])['tw_to_k'].count()  
     df= df.map(lambda elem : round(elem/num_rows*100, 2))
-    
+
     #print(df)
     graph_data = ALL_GRAPHS.get(6)
     graph_data.labels = list(df.index)
@@ -170,7 +176,7 @@ def twitter_after_misp(full_df: pd.DataFrame) -> GraphData:
     
     df = df2.groupby(['indicator_type'])['tw_to_misp'].count()  
     df= df.map(lambda elem : round(elem/num_rows*100, 2))
-    
+
     #print(df)
     graph_data = ALL_GRAPHS.get(7)
     graph_data.labels = list(df.index)
@@ -193,7 +199,20 @@ def twitter_after_virustotal(full_df: pd.DataFrame) -> GraphData:
     graph_data.labels = list(df.index)
     graph_data.data = list(df)
     return graph_data
-#TODO: Add other functions for other graphs here!
+
+
+def time_trend_virustotal(full_df: pd.DataFrame) -> GraphData:
+    df = full_df
+    df = df[df['tw_to_vt'] != 'None']
+
+    graph_data = ALL_GRAPHS.get(9)
+    graph_data.labels = list(df['twitter_date'])
+    graph_data.data = list(df['tw_to_vt'].astype('float'))
+    print(graph_data.data)
+    return graph_data
+
+
+# TODO: Add other functions for other graphs here!
 
 GRAPH_DICT: Dict[int, Callable[[pd.DataFrame], GraphData]] = {
     0: ioc_by_indicatortype_data,
@@ -204,7 +223,8 @@ GRAPH_DICT: Dict[int, Callable[[pd.DataFrame], GraphData]] = {
     5: twitter_after_alienvault,
     6: twitter_after_kaspersky,
     7: twitter_after_misp,
-    8: twitter_after_virustotal
+    8: twitter_after_virustotal,
+    9: time_trend_virustotal
 }
 
 def get_graph_data(full_df: pd.DataFrame, graph_id: int) -> GraphData:
