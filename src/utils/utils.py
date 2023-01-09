@@ -204,10 +204,10 @@ def twitter_after_virustotal(full_df: pd.DataFrame) -> GraphData:
 def time_trend_virustotal(full_df: pd.DataFrame) -> GraphData:
     df = full_df
     df = df[df['tw_to_vt'] != 'None']
-
     graph_data = ALL_GRAPHS.get(9)
     graph_data.labels = list(df['twitter_date'])
     graph_data.data = list(df['tw_to_vt'].astype('float'))
+    graph_data.data = list(df['tw_to_vt'])
     print(graph_data.data)
     return graph_data
 
