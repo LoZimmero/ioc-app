@@ -86,7 +86,7 @@ def ioc_by_label(full_df: pd.DataFrame) -> GraphData:
 
 def ioc_got_first_by_twitter_data(full_df: pd.DataFrame) -> GraphData:
     dates = [index for index in list(full_df.columns) if '_date' in index]
-    print(dates)
+    #print(dates)
     dates.remove('twitter_date')
 
     df = full_df
@@ -135,7 +135,7 @@ def twitter_after_alienvault(full_df: pd.DataFrame) -> GraphData:
     
     df = df2.groupby(['indicator_type'])['tw_to_av'].count()  
     
-    print(df)
+    #print(df)
     graph_data = ALL_GRAPHS.get(5)
     graph_data.labels = list(df.index)
     graph_data.data = list(df)
@@ -150,7 +150,7 @@ def twitter_after_kaspersky(full_df: pd.DataFrame) -> GraphData:
     
     df = df2.groupby(['indicator_type'])['tw_to_k'].count()  
     
-    print(df)
+    #print(df)
     graph_data = ALL_GRAPHS.get(6)
     graph_data.labels = list(df.index)
     graph_data.data = list(df)
@@ -165,7 +165,7 @@ def twitter_after_misp(full_df: pd.DataFrame) -> GraphData:
     
     df = df2.groupby(['indicator_type'])['tw_to_misp'].count()  
     
-    print(df)
+    #print(df)
     graph_data = ALL_GRAPHS.get(7)
     graph_data.labels = list(df.index)
     graph_data.data = list(df)
@@ -180,7 +180,7 @@ def twitter_after_virustotal(full_df: pd.DataFrame) -> GraphData:
     
     df = df2.groupby(['indicator_type'])['tw_to_vt'].count()  
     
-    print(df)
+    #print(df)
     graph_data = ALL_GRAPHS.get(8)
     graph_data.labels = list(df.index)
     graph_data.data = list(df)
@@ -204,7 +204,7 @@ def get_graph_data(full_df: pd.DataFrame, graph_id: int) -> GraphData:
         res = GRAPH_DICT.get(graph_id)(full_df)
         return res
     except Exception as e:
-        print(e)
+        #print(e)
         return None
 
 def get_all_graphs_reducted() -> list[GraphData]:
