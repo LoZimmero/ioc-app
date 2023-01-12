@@ -4,6 +4,9 @@
 {% block head %}
 <!-- Import chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Custom CSS -->
+<link href="{{url_for('static', filename='dashboards.css')}}" rel="stylesheet">
+
 {% endblock %}
 {% block content %}
 <div class="container">
