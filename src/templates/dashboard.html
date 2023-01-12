@@ -23,7 +23,7 @@
     let graph_data = JSON.parse(context)
     console.log(graph_data)
     new Chart(ctx, {
-      type: graph_data['graph_type'] || 'bar',
+      type: graph_data['type'] || 'bar',
       data: {
         labels: graph_data.labels,
         datasets: [{
