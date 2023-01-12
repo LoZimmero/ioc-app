@@ -5,48 +5,31 @@
 <!-- Import chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <!-- Custom CSS -->
-<link href="{{url_for('static', filename='index.css')}}" rel="stylesheet">
+<!--<link href="{{url_for('static', filename='index.css')}}" rel="stylesheet">-->
 {% endblock %}
 
 {% block content %}
-
-<div class="container">
-    <!--<h1 class="text-center">Twitter-TIP</h1>-->
-    <div class="navbar">
-        <img src="static/logo.png" class="logo">
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('dashboards') }}"> Graphs </a></li>
-                <li><a href="{{ url_for('tables') }}"> Tables </a></li>
-            </ul>
-        </nav>
-        <!--
-        <p>Click <a href="{{ url_for('dashboards') }}">here</a> to go to dashboard</p>
-        <p>Click <a href="{{ url_for('tables') }}">here</a> to go to tables</p>-->
-    </div>
-
+<div class="container d-flex justify-content-center align-items-center" style="width: 100vw; min-height: 90vh;">
     <div class="row">
-        <div class="col">
-            <h1>Twitter-TIP</h1>
-            <p>Lo scopo del progetto è quello di valutare l’affidabilità e la qualità di Twitter come
-                piattaforma di threat intelligence, confrontando le segnalazioni di IoC pubblicate nel
-                mese di settembre 2022 a quelle presenti su piattaforme di TI riconosciute, tra cui
-                MalwareBazaar, VirusTotal, Kaspersky OpenTip, HashLookup, AlienVault, MISP</p>
-            
-        </div>
-        <div class="col_1">
-            <div class="card graphs">
-                <a href="{{ url_for('dashboards') }}">
-                <h5>Graphs</h5>
-                <p>Scrivere qualcosa che descriva la card .....</p>
-                </a>
-            </div>
-            <div class="card tables">
-                <a href="{{ url_for('tables') }}">
+        <h1>Twitter-TIP</h1>
+        <p>Lo scopo del progetto è quello di valutare l’affidabilità e la qualità di Twitter come
+            piattaforma di threat intelligence, confrontando le segnalazioni di IoC pubblicate nel
+            mese di settembre 2022 a quelle presenti su piattaforme di TI riconosciute, tra cui
+            MalwareBazaar, VirusTotal, Kaspersky OpenTip, HashLookup, AlienVault, MISP</p>
+
+        <div class="row">
+            <a href="{{ url_for('dashboards') }}">
+                <div class="card graphs">
+                    <h5>Graphs</h5>
+                    <p>Scrivere qualcosa che descriva la card .....</p>
+                </div>
+            </a>
+            <a href="{{ url_for('tables') }}">
+                <div class="card tables">
                     <h5>Tables</h5>
                     <p>Scrivere qualcosa che descriva la card .....</p>
-                </a>
-            </div>
+                </div>
+            </a>
         </div>
     </div>
 </div>
