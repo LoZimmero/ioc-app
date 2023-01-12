@@ -43,6 +43,7 @@ nav ul li a{
 }
 .col{
     flex-basis: 70%;
+    margin-top: 255px;
 }
 .col_1{
     flex-basis: 30%;
