@@ -23,7 +23,7 @@ TABLES = [
     },
     {
         'name': 'Results table',
-        'description': 'Table representing results',
+        'description': 'Table representing results got from data analysis',
         'id': 1
     }
 ]
@@ -49,6 +49,11 @@ def tables():
 def table(table_id):
     
     df = TABLE_DATA.get(table_id)
+    if df is None or df.empty:
+        # Create error 404
+        res = make_response(render_template('404.html', reason='Invalid table id passed'))
+        res.status_code = 404
+        return res
     table_data = []
     for index, data in df.iterrows():
         obj = {}
@@ -63,7 +68,8 @@ def table(table_id):
 
     # NB: 'table_data' is a list of lists because JS doesen't want a list
     # too long.
-    return render_template('table.html', data= {'data':table_data})
+    table = TABLES[table_id]
+    return render_template('table.html', data={'data':table_data}, title=table['name'], description = table['description'])
 
 @app.route('/dashboards', methods=['GET'])
 def dashboards():

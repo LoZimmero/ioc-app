@@ -17,7 +17,7 @@
     <nav class="navbar navbar-expand navbar-dark bg-dark" aria-label="Second navbar example">
         <div class="container-fluid">
           <a class="navbar-brand" href="{{ url_for('index') }}">
-            <img src="static/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+            <img src="{{url_for('static', filename='logo.png')}}" width="30" height="30" class="d-inline-block align-top" alt="">
             Twitter-TIP
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
