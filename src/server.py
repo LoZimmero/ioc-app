@@ -4,9 +4,9 @@ from utils.utils import get_graph_data, get_all_graphs_reducted
 
 app = Flask(__name__)
 
-df = pd.read_csv('data\\result.csv', sep=',')
-resultwithmatches_df = pd.read_csv('data\\resultwithmatches.csv', sep=',')
-users_df = pd.read_csv('data\\users.csv', sep=',')
+df = pd.read_csv('..\\data\\result.csv', sep=',')
+resultwithmatches_df = pd.read_csv('..\\data\\resultwithmatches.csv', sep=',')
+users_df = pd.read_csv('..\\data\\users.csv', sep=',')
 
 # Convert date columns of df into dates
 dates_columns = [d for d in df.columns if '_date' in d]

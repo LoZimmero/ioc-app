@@ -1,6 +1,7 @@
+import numpy as np
 import pandas as pd
 from models.models import GraphData
-from typing import Callable, Dict
+from typing import Callable, Dict, List
 from dateutil.parser import parse as parse_date
 
 ALL_GRAPHS: Dict[int, GraphData] = {
@@ -202,13 +203,20 @@ def twitter_after_virustotal(full_df: pd.DataFrame) -> GraphData:
 
 
 def time_trend_virustotal(full_df: pd.DataFrame) -> GraphData:
-    df = full_df
+    df = full_df.copy()
+
     df = df[df['tw_to_vt'] != 'None']
+    df['twitter_date'] = pd.to_datetime(df['twitter_date'])
+    df['tw_to_vt'] = df['tw_to_vt'].astype('float') / 60000
+
+    counts = pd.Series(index=df['twitter_date'], data=np.array(df['tw_to_vt'])).resample('120T').mean()
+    counts = counts.dropna()
+
     graph_data = ALL_GRAPHS.get(9)
-    graph_data.labels = list(df['twitter_date'])
-    graph_data.data = list(df['tw_to_vt'].astype('float'))
-    graph_data.data = list(df['tw_to_vt'])
+    graph_data.labels = list(counts.index)
+    graph_data.data = list(counts.values)
     print(graph_data.data)
+
     return graph_data
 
 
@@ -235,5 +243,5 @@ def get_graph_data(full_df: pd.DataFrame, graph_id: int) -> GraphData:
         #print(e)
         return None
 
-def get_all_graphs_reducted() -> list[GraphData]:
+def get_all_graphs_reducted() -> List[GraphData]:
     return list(ALL_GRAPHS.values())
