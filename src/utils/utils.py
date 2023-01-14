@@ -18,43 +18,43 @@ ALL_GRAPHS: Dict[int, GraphData] = {
         description='This graph shows how many IoC where found by users'
     ),
     2: GraphData(
-        id = 2,
+        id=2,
         title='IoC by label',
         type='bar',
         description='This graph shows how many IoC where collected grouped by indicator_type'
     ),
     3: GraphData(
-        id = 3,
+        id=3,
         title='IoC discovered first by twitter',
         type='bar',
         description='This graph shows how many IoC where discovered first by twitter'
     ),
     4: GraphData(
-        id = 4,
+        id=4,
         title='Percentages of IoC\'s categories',
         type='bar',
         description='This graph shows the percentages of IoC\'s categories'
     ),
     5: GraphData(
-        id = 5,
+        id=5,
         title='Twitter after AlienVault',
         type='bar',
         description='This graph shows the percentage of times Twitter comes after AlienVault'
     ),
     6: GraphData(
-        id = 6,
+        id=6,
         title='Twitter after Kaspersky',
         type='bar',
         description='This graph shows the percentage of times Twitter comes after Kaspersky'
     ),
     7: GraphData(
-        id = 7,
+        id=7,
         title='Twitter after Misp',
         type='bar',
         description='This graph shows the percentage of times Twitter comes after Misp'
     ),
     8: GraphData(
-        id = 8,
+        id=8,
         title='Twitter after VirusTotal',
         type='bar',
         description='This graph shows the number of times Twitter comes after VirusTotal'
@@ -64,9 +64,40 @@ ALL_GRAPHS: Dict[int, GraphData] = {
         title='VirusTotal Trend over time',
         type='bar',
         description='This graph shows VirusTotal trend over time.'
+    ),
+    11: GraphData(
+        id=11,
+        title='URLhaus Trend over time',
+        type='bar',
+        description='This graph shows URLhaus trend over time.'
+    ),
+    12: GraphData(
+        id=12,
+        title='MISP Trend over time',
+        type='bar',
+        description='This graph shows MISP trend over time.'
+    ),
+    13: GraphData(
+        id=13,
+        title='Kaspersky Trend over time',
+        type='bar',
+        description='This graph shows Kaspersky trend over time.'
+    ),
+    14: GraphData(
+        id=14,
+        title='HashLookup Trend over time',
+        type='bar',
+        description='This graph shows HashLookup trend over time.'
+    ),
+    15: GraphData(
+        id=15,
+        title='AlienVault Trend over time',
+        type='bar',
+        description='This graph shows AlienVault trend over time.'
     )
 
 }
+
 
 def ioc_by_indicatortype_data(full_df: pd.DataFrame) -> GraphData:
     df = full_df.groupby(['indicator_type'])['indicator'].count()
@@ -85,15 +116,16 @@ def ioc_by_user_data(full_df: pd.DataFrame) -> GraphData:
 
 
 def ioc_by_label(full_df: pd.DataFrame) -> GraphData:
-    df = full_df.groupby(['label'])['indicator'].count()    
+    df = full_df.groupby(['label'])['indicator'].count()
     graph_data = ALL_GRAPHS.get(2)
     graph_data.labels = list(df.index)
     graph_data.data = list(df)
-    return graph_data   
+    return graph_data
+
 
 def ioc_got_first_by_twitter_data(full_df: pd.DataFrame) -> GraphData:
     dates = [index for index in list(full_df.columns) if '_date' in index]
-    #print(dates)
+    # print(dates)
     dates.remove('twitter_date')
 
     df = full_df
@@ -123,77 +155,80 @@ def ioc_got_first_by_twitter_data(full_df: pd.DataFrame) -> GraphData:
     return graph_data
 
 
-
 def ioc_categories_percentages(full_df: pd.DataFrame) -> GraphData:
     num_rows = full_df.shape[0]
     series = full_df.groupby(['indicator_type'])['indicator'].count()
-    series = series.map(lambda elem : round(elem/num_rows*100, 2))
+    series = series.map(lambda elem: round(elem / num_rows * 100, 2))
     graph_data = ALL_GRAPHS.get(4)
     graph_data.labels = list(series.index)
     graph_data.data = list(series)
     return graph_data
 
+
 def twitter_after_alienvault(full_df: pd.DataFrame) -> GraphData:
     num_rows = full_df.shape[0]
 
-    df= full_df
-    df['tw_to_av'] = df['tw_to_av'].replace('None','0')
+    df = full_df
+    df['tw_to_av'] = df['tw_to_av'].replace('None', '0')
     df['tw_to_av'] = df['tw_to_av'].astype('float')
-    df2= df[df["tw_to_av"] > 0]
-    
-    df = df2.groupby(['indicator_type'])['tw_to_av'].count()
-    df= df.map(lambda elem : round(elem/num_rows*100, 2))
+    df2 = df[df["tw_to_av"] > 0]
 
-    #print(df)
+    df = df2.groupby(['indicator_type'])['tw_to_av'].count()
+    df = df.map(lambda elem: round(elem / num_rows * 100, 2))
+
+    # print(df)
     graph_data = ALL_GRAPHS.get(5)
     graph_data.labels = list(df.index)
     graph_data.data = list(df)
     return graph_data
 
+
 def twitter_after_kaspersky(full_df: pd.DataFrame) -> GraphData:
     num_rows = full_df.shape[0]
 
-    df= full_df
-    df['tw_to_k'] = df['tw_to_k'].replace('None','0')
+    df = full_df
+    df['tw_to_k'] = df['tw_to_k'].replace('None', '0')
     df['tw_to_k'] = df['tw_to_k'].astype('float')
-    df2= df[df["tw_to_k"] > 0]
-    
-    df = df2.groupby(['indicator_type'])['tw_to_k'].count()  
-    df= df.map(lambda elem : round(elem/num_rows*100, 2))
+    df2 = df[df["tw_to_k"] > 0]
 
-    #print(df)
+    df = df2.groupby(['indicator_type'])['tw_to_k'].count()
+    df = df.map(lambda elem: round(elem / num_rows * 100, 2))
+
+    # print(df)
     graph_data = ALL_GRAPHS.get(6)
     graph_data.labels = list(df.index)
     graph_data.data = list(df)
     return graph_data
 
+
 def twitter_after_misp(full_df: pd.DataFrame) -> GraphData:
     num_rows = full_df.shape[0]
 
-    df= full_df
-    df['tw_to_misp'] = df['tw_to_misp'].replace('None','0')
+    df = full_df
+    df['tw_to_misp'] = df['tw_to_misp'].replace('None', '0')
     df['tw_to_misp'] = df['tw_to_misp'].astype('float')
-    df2= df[df["tw_to_misp"] > 0]
-    
-    df = df2.groupby(['indicator_type'])['tw_to_misp'].count()  
-    df= df.map(lambda elem : round(elem/num_rows*100, 2))
+    df2 = df[df["tw_to_misp"] > 0]
 
-    #print(df)
+    df = df2.groupby(['indicator_type'])['tw_to_misp'].count()
+    df = df.map(lambda elem: round(elem / num_rows * 100, 2))
+
+    # print(df)
     graph_data = ALL_GRAPHS.get(7)
     graph_data.labels = list(df.index)
     graph_data.data = list(df)
     return graph_data
 
+
 def twitter_after_virustotal(full_df: pd.DataFrame) -> GraphData:
     num_rows = full_df.shape[0]
 
-    df= full_df
-    df['tw_to_vt'] = df['tw_to_vt'].replace('None','0')
+    df = full_df
+    df['tw_to_vt'] = df['tw_to_vt'].replace('None', '0')
     df['tw_to_vt'] = df['tw_to_vt'].astype('float')
-    df2= df[df["tw_to_vt"] > 0]
-    
-    df = df2.groupby(['indicator_type'])['tw_to_vt'].count()  
-    df= df.map(lambda elem : round(elem/num_rows*100, 2))
+    df2 = df[df["tw_to_vt"] > 0]
+
+    df = df2.groupby(['indicator_type'])['tw_to_vt'].count()
+    df = df.map(lambda elem: round(elem / num_rows * 100, 2))
 
     print(df)
     graph_data = ALL_GRAPHS.get(8)
@@ -207,12 +242,102 @@ def time_trend_virustotal(full_df: pd.DataFrame) -> GraphData:
 
     df = df[df['tw_to_vt'] != 'None']
     df['twitter_date'] = pd.to_datetime(df['twitter_date'])
-    df['tw_to_vt'] = df['tw_to_vt'].astype('float') / 60000
+    df['tw_to_vt'] = df['tw_to_vt'].astype('float') / 3600  # Now we have hour difference
 
-    counts = pd.Series(index=df['twitter_date'], data=np.array(df['tw_to_vt'])).resample('120T').mean()
+    counts = pd.Series(index=df['twitter_date'], data=np.array(df['tw_to_vt'])).resample('2H').mean()
     counts = counts.dropna()
 
     graph_data = ALL_GRAPHS.get(9)
+    graph_data.labels = list(counts.index)
+    graph_data.data = list(counts.values)
+    print(graph_data.data)
+
+    return graph_data
+
+
+def time_trend_urlhaus(full_df: pd.DataFrame) -> GraphData:
+    df = full_df.copy()
+
+    df = df[df['tw_to_ul'] != 'None']
+    df['twitter_date'] = pd.to_datetime(df['twitter_date'])
+    df['tw_to_ul'] = df['tw_to_ul'].astype('float') / 3600
+
+    counts = pd.Series(index=df['twitter_date'], data=np.array(df['tw_to_ul'])).resample('2H').mean()
+    counts = counts.dropna()
+
+    graph_data = ALL_GRAPHS.get(11)
+    graph_data.labels = list(counts.index)
+    graph_data.data = list(counts.values)
+    print(graph_data.data)
+
+    return graph_data
+
+
+def time_trend_misp(full_df: pd.DataFrame) -> GraphData:
+    df = full_df.copy()
+
+    df = df[df['tw_to_misp'] != 'None']
+    df['twitter_date'] = pd.to_datetime(df['twitter_date'])
+    df['tw_to_misp'] = df['tw_to_misp'].astype('float') / 3600
+
+    counts = pd.Series(index=df['twitter_date'], data=np.array(df['tw_to_misp'])).resample('2H').mean()
+    counts = counts.dropna()
+
+    graph_data = ALL_GRAPHS.get(12)
+    graph_data.labels = list(counts.index)
+    graph_data.data = list(counts.values)
+    print(graph_data.data)
+
+    return graph_data
+
+
+def time_trend_kaspersky(full_df: pd.DataFrame) -> GraphData:
+    df = full_df.copy()
+
+    df = df[df['tw_to_k'] != 'None']
+    df['twitter_date'] = pd.to_datetime(df['twitter_date'])
+    df['tw_to_k'] = df['tw_to_k'].astype('float') / 3600
+
+    counts = pd.Series(index=df['twitter_date'], data=np.array(df['tw_to_k'])).resample('2H').mean()
+    counts = counts.dropna()
+
+    graph_data = ALL_GRAPHS.get(13)
+    graph_data.labels = list(counts.index)
+    graph_data.data = list(counts.values)
+    print(graph_data.data)
+
+    return graph_data
+
+
+def time_trend_hl(full_df: pd.DataFrame) -> GraphData:
+    df = full_df.copy()
+
+    df = df[df['tw_to_hl'] != 'None']
+    df['twitter_date'] = pd.to_datetime(df['twitter_date'])
+    df['tw_to_hl'] = df['tw_to_hl'].astype('float') / 3600
+
+    counts = pd.Series(index=df['twitter_date'], data=np.array(df['tw_to_hl'])).resample('2H').mean()
+    counts = counts.dropna()
+
+    graph_data = ALL_GRAPHS.get(14)
+    graph_data.labels = list(counts.index)
+    graph_data.data = list(counts.values)
+    print(graph_data.data)
+
+    return graph_data
+
+
+def time_trend_av(full_df: pd.DataFrame) -> GraphData:
+    df = full_df.copy()
+
+    df = df[df['tw_to_av'] != 'None']
+    df['twitter_date'] = pd.to_datetime(df['twitter_date'])
+    df['tw_to_av'] = df['tw_to_av'].astype('float') / 3600
+
+    counts = pd.Series(index=df['twitter_date'], data=np.array(df['tw_to_av'])).resample('2H').mean()
+    counts = counts.dropna()
+
+    graph_data = ALL_GRAPHS.get(15)
     graph_data.labels = list(counts.index)
     graph_data.data = list(counts.values)
     print(graph_data.data)
@@ -232,16 +357,23 @@ GRAPH_DICT: Dict[int, Callable[[pd.DataFrame], GraphData]] = {
     6: twitter_after_kaspersky,
     7: twitter_after_misp,
     8: twitter_after_virustotal,
-    9: time_trend_virustotal
+    9: time_trend_virustotal,
+    11: time_trend_urlhaus,
+    12: time_trend_misp,
+    13: time_trend_kaspersky,
+    14: time_trend_hl,
+    15: time_trend_av
 }
+
 
 def get_graph_data(full_df: pd.DataFrame, graph_id: int) -> GraphData:
     try:
         res = GRAPH_DICT.get(graph_id)(full_df)
         return res
     except Exception as e:
-        #print(e)
+        # print(e)
         return None
+
 
 def get_all_graphs_reducted() -> List[GraphData]:
     return list(ALL_GRAPHS.values())
