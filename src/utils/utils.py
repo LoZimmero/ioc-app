@@ -65,17 +65,23 @@ ALL_GRAPHS: Dict[int, GraphData] = {
         type='bar',
         description='This graph shows VirusTotal trend over time.'
     ),
-    11: GraphData(
-        id=11,
-        title='URLhaus Trend over time',
+    10: GraphData(
+        id = 10,
+        title='% of verified IoCs',
         type='bar',
-        description='This graph shows URLhaus trend over time.'
+        description='This graph shows the number of IoC from Twitter that have been verified by other platforms'
+    ),
+    11: GraphData(
+        id = 11,
+        title='Most verified IoC categories',
+        type='bar',
+        description='This graph shows the percentage of verified IoC in each category'
     ),
     12: GraphData(
         id=12,
-        title='MISP Trend over time',
+        title='Most verified IoC categories, by at least 2 platforms',
         type='bar',
-        description='This graph shows MISP trend over time.'
+        description='This graph shows the percentage of IoC verified by at least 3 platforms, in each category'
     ),
     13: GraphData(
         id=13,
@@ -94,8 +100,19 @@ ALL_GRAPHS: Dict[int, GraphData] = {
         title='AlienVault Trend over time',
         type='bar',
         description='This graph shows AlienVault trend over time.'
+    ),
+    16: GraphData(
+        id=16,
+        title='URLhaus Trend over time',
+        type='bar',
+        description='This graph shows URLhaus trend over time.'
+    ),
+    17: GraphData(
+        id=17,
+        title='MISP Trend over time',
+        type='bar',
+        description='This graph shows MISP trend over time.'
     )
-
 }
 
 
@@ -254,6 +271,52 @@ def time_trend_virustotal(full_df: pd.DataFrame) -> GraphData:
 
     return graph_data
 
+def verified_ioc_percentage(full_df: pd.DataFrame) -> GraphData:
+    df=pd.read_csv('data\\resultwithmatches.csv')
+
+    perc_verified = (len(df[df['n_matches']!=0])/len(df))*100
+    perc_verified_3_or_more=(len(df[df['n_matches']>=3])/len(df))*100
+    perc_not_verified = (len(df[df['n_matches']==0])/len(df))*100
+
+    graph_data= ALL_GRAPHS.get(10)
+    graph_data.data= [perc_verified,perc_verified_3_or_more,perc_not_verified]
+    graph_data.labels=['verified','verified by at least 3 platforms','not verified']
+    print(graph_data.data)
+    return graph_data
+
+def verified_ioc_percentage_by_category(full_df: pd.DataFrame) -> GraphData:
+    df=pd.read_csv('data\\resultwithmatches.csv')
+    labels=[]
+    data=[]
+
+    df_ver=df[df['n_matches']>0]
+
+    for category in df['indicator_type'].unique():
+        labels.append(category)
+        data.append(100*(len(df_ver[df_ver['indicator_type']==category])/len(df[df['indicator_type']==category])))
+
+    graph_data= ALL_GRAPHS.get(10)
+    graph_data.data= data
+    graph_data.labels=labels
+    print(graph_data.data)
+    return graph_data
+
+def verified_ioc_percentage_by_category_3plats(full_df: pd.DataFrame) -> GraphData:
+    df=pd.read_csv('data\\resultwithmatches.csv')
+    labels=[]
+    data=[]
+
+    df_ver=df[df['n_matches']>2]
+
+    for category in df['indicator_type'].unique():
+        labels.append(category)
+        data.append(100*(len(df_ver[df_ver['indicator_type']==category])/len(df[df['indicator_type']==category])))
+
+    graph_data= ALL_GRAPHS.get(10)
+    graph_data.data= data
+    graph_data.labels=labels
+    print(graph_data.data)
+    return graph_data
 
 def time_trend_urlhaus(full_df: pd.DataFrame) -> GraphData:
     df = full_df.copy()
@@ -358,17 +421,20 @@ GRAPH_DICT: Dict[int, Callable[[pd.DataFrame], GraphData]] = {
     7: twitter_after_misp,
     8: twitter_after_virustotal,
     9: time_trend_virustotal,
-    11: time_trend_urlhaus,
-    12: time_trend_misp,
+    10: verified_ioc_percentage,
+    11:verified_ioc_percentage_by_category,
+    12:verified_ioc_percentage_by_category_3plats,
     13: time_trend_kaspersky,
     14: time_trend_hl,
-    15: time_trend_av
+    15: time_trend_av,
+    16: time_trend_urlhaus,
+    17: time_trend_misp,
 }
 
 
 def get_graph_data(full_df: pd.DataFrame, graph_id: int) -> GraphData:
     try:
-        res = GRAPH_DICT.get(graph_id)(full_df)
+        res = GRAPH_DICT.get(graph_id)(full_df.copy())
         return res
     except Exception as e:
         # print(e)
