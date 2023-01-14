@@ -33,21 +33,23 @@ TABLE_DATA = {
     1: resultwithmatches_df
 }
 
+
 def get_table_data(id: int):
     return TABLE_DATA.get(id)
-    
+
 
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 
+
 @app.route('/tables', methods=['GET'])
 def tables():
-    return render_template('tables.html', data= {'tables': TABLES})
+    return render_template('tables.html', data={'tables': TABLES})
+
 
 @app.route('/tables/<int:table_id>', methods=['GET'])
 def table(table_id):
-    
     df = TABLE_DATA.get(table_id)
     if df is None or df.empty:
         # Create error 404
@@ -69,21 +71,22 @@ def table(table_id):
     # NB: 'table_data' is a list of lists because JS doesen't want a list
     # too long.
     table = TABLES[table_id]
-    return render_template('table.html', data={'data':table_data}, title=table['name'], description = table['description'])
+    return render_template('table.html', data={'data': table_data}, title=table['name'],
+                           description=table['description'])
+
 
 @app.route('/dashboards', methods=['GET'])
 def dashboards():
-
     graphs = get_all_graphs_reducted()
     graphs = [e.to_json() for e in graphs]
-    #print(graphs,'\n')
+    # print(graphs,'\n')
 
     # Return bar graph showing how many data grouped by categories
     return render_template('dashboards.html', graphs=graphs)
 
+
 @app.route('/dashboards/<int:id>', methods=['GET'])
 def dashboard(id):
-
     graph_id = None
     try:
         graph_id = int(id)
@@ -103,7 +106,8 @@ def dashboard(id):
     # Return bar graph showing how many data grouped by categories
     return render_template('dashboard.html', data=graph_data.to_json())
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     app.run(
         host='0.0.0.0',
         port=80,
