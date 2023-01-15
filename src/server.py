@@ -117,7 +117,6 @@ def dashboard(id):
 
 
 if __name__ == '__main__':
-    print(HOST,PORT,DEBUG)
     app.run(
         host=HOST,
         port=PORT,
