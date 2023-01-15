@@ -3,6 +3,7 @@ import pandas as pd
 from utils.utils import get_graph_data, get_all_graphs_reducted
 from dotenv import load_dotenv
 import os
+from dateutil.parser import parse
 
 app = Flask(__name__)
 
@@ -17,6 +18,30 @@ df = pd.read_csv('data/result.csv', sep=',')
 resultwithmatches_df = pd.read_csv('data/resultwithmatches.csv', sep=',')
 users_df = pd.read_csv('data/users.csv', sep=',')
 
+def process_csv(df: pd.DataFrame) -> None:
+    # Convert date columns of df into dates
+    dates_columns = [d for d in df.columns if '_date' in d]
+    for d in dates_columns:
+        # replace "None" string with None
+        col = df[d].replace('None', '')
+        df[d] = pd.to_datetime(col)
+    df['tw_to_mwbazar'] = (df['twitter_date'] - df['mwbazar_date']).dt.seconds
+    df['is_mwbazar_before'] = df['tw_to_mwbazar'] > 0
+    # Add computed fields for MWBAZAAR
+
+
+process_csv(df)
+
+for index, row in resultwithmatches_df.iterrows():
+    tw_date = parse(row['twitter_date']).timestamp() if not row['twitter_date'] in ['','None'] else 0
+    mw_date = parse(row['mwbazar_date']).timestamp() if not row['mwbazar_date'] in ['','None'] else 0
+    if tw_date == mw_date == 0:
+        res = 'None'
+    else:
+        res = tw_date - mw_date
+    row['tw_to_mwbazar'] = res
+    row['is_mwbazar_before'] = row['tw_to_mwbazar'] > 0
+"""
 # Convert date columns of df into dates
 dates_columns = [d for d in df.columns if '_date' in d]
 for d in dates_columns:
@@ -24,6 +49,19 @@ for d in dates_columns:
     col = df[d].replace('None', '')
     df[d] = pd.to_datetime(col)
 
+dates_columns = [d for d in resultwithmatches_df.columns if '_date' in d]
+for d in dates_columns:
+    # replace "None" string with None
+    col = resultwithmatches_df[d].replace('None', '')
+    resultwithmatches_df[d] = pd.to_datetime(col)
+
+# Add computed fields for MWBAZAAR
+df['tw_to_mwbazar'] = df['twitter_date'] - df['mwbazar_date']
+df['is_mwbazar_before'] = True if df['tw_to_mwbazar'] > 0 else False
+
+df['tw_to_mwbazar'] = df['twitter_date'] - df['mwbazar_date']
+df['is_mwbazar_before'] = True if df['tw_to_mwbazar'] > 0 else False
+"""
 TABLES = [
     {
         'name': 'Users table',

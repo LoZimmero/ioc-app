@@ -23,8 +23,7 @@
   const ctx = document.getElementById('myChart');
 
   const generateGraph = (ctx, context) => {
-    let graph_data = JSON.parse(context)
-    console.log(graph_data)
+    let graph_data = context
     new Chart(ctx, {
       type: graph_data['type'] || 'bar',
       data: {
@@ -50,7 +49,7 @@
     });
   }
 
-  generateGraph(ctx, '{{ data|tojson }}');
+  generateGraph(ctx, {{ data|tojson }});
 
 </script>
 
