@@ -1,12 +1,21 @@
 from flask import Flask, render_template, Response, make_response
 import pandas as pd
 from utils.utils import get_graph_data, get_all_graphs_reducted
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 
-df = pd.read_csv('data\\result.csv', sep=',')
-resultwithmatches_df = pd.read_csv('data\\resultwithmatches.csv', sep=',')
-users_df = pd.read_csv('data\\users.csv', sep=',')
+load_dotenv()
+
+# Read variables from .env file
+HOST = os.getenv('HOST') or '0.0.0.0'
+DEBUG = os.getenv('DEBUG') or False
+PORT = os.getenv('PORT') or 80
+
+df = pd.read_csv('data/result.csv', sep=',')
+resultwithmatches_df = pd.read_csv('data/resultwithmatches.csv', sep=',')
+users_df = pd.read_csv('data/users.csv', sep=',')
 
 # Convert date columns of df into dates
 dates_columns = [d for d in df.columns if '_date' in d]
@@ -108,8 +117,9 @@ def dashboard(id):
 
 
 if __name__ == '__main__':
+    print(HOST,PORT,DEBUG)
     app.run(
-        host='0.0.0.0',
-        port=80,
-        debug=True
+        host=HOST,
+        port=PORT,
+        debug=DEBUG
     )
