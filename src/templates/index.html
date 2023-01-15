@@ -31,21 +31,21 @@
                 piattaforma di threat intelligence, confrontando le segnalazioni di IoC pubblicate nel
                 mese di settembre 2022 a quelle presenti su piattaforme di TI riconosciute, tra cui
                 MalwareBazaar, VirusTotal, Kaspersky OpenTip, HashLookup, AlienVault, MISP</p>
-            
+
         </div>
         <div class="col_1">
-            <div class="card graphs">
-                <a href="{{ url_for('dashboards') }}">
-                <h5>Graphs</h5>
-                <!--<p>Scrivere qualcosa che descriva la card .....</p>-->
-                </a>
-            </div>
-            <div class="card tables">
-                <a href="{{ url_for('tables') }}">
-                <h5>Tables</h5>
-                <!--<p>Scrivere qualcosa che descriva la card .....</p>-->
-                </a>
-            </div>
+            <a href="{{ url_for('dashboards') }}">
+                <div class="card graphs">
+                    <h5>Graphs</h5>
+                    <!--<p>Scrivere qualcosa che descriva la card .....</p>-->
+                </div>
+            </a>
+            <a href="{{ url_for('tables') }}">
+                <div class="card tables">
+                    <h5>Tables</h5>
+                    <!--<p>Scrivere qualcosa che descriva la card .....</p>-->
+                </div>
+            </a>
         </div>
     </div>
 </div>
