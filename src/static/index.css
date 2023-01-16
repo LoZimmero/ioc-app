@@ -6,7 +6,7 @@ html, body{
 }
 .container{
     position: absolute;
-    background: linear-gradient(180deg, rgba(33,37,41,255) 0%, rgba(114,155,203,1) 30%, rgba(174,119,214,1) 80%);
+    background: linear-gradient(180deg, rgba(33,37,41,1) 0%, rgba(114,155,203,1) 30%, rgba(174,119,214,1) 80%);
 }
 .box div{
     position: absolute;
@@ -89,26 +89,34 @@ html, body{
 
 .row{
     display: flex;
-    height: 88%;
     align-items: center;
+    margin-left: 1%;
 }
 .col{
-    flex-basis: 65%;
-    /*margin-top: 255px;*/
-    margin-top: 20%;
+    flex-basis: 60%;
+    margin-top: 10%;
+    padding: 2%;
+    display: inline-block;
+    border-radius: 20px;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0);
+    box-shadow: 0 5px 45px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
 }
 .col_1{
-    flex-basis: 35%;
+    flex-basis: 40%;
+    margin-top: 10%;
 }
 h1{
-    color: black;
+    color: white;
     font-size: 60px;
-    text-shadow: 0 0 3px rgba(0,0,0,0.1);
+    text-shadow: 0 0 10px rgba(33,37,41,0.5);
 }
 p{
-    color: black;
+    color: white;
     font-size: 18px;
-    text-shadow: 0 0 3px rgba(0,0,0,0.1);
+    text-shadow: 0 0 5px rgba(33,37,41,0.5);
 }
 .card{
     width: 200px;
@@ -145,8 +153,8 @@ p{
     transform: skewX(45deg) translateX(-300px);
 }
 h5{
-    color: black;
-    text-shadow: 0 0 3px #999;
+    color: white;
+    text-shadow: 0 0 5px rgba(33,37,41,0.2);
     font-size: 38px;
     text-align: center;
     margin-top: 75px;
